@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+        }
+
+        #radial-bar-chart {
+            margin: auto;
+            position: relative;
+            box-shadow: 0 0 10px 0 #eee;
+        }
+
+        .tooltip {
+            position: absolute;
+            left: 0;
+            top: 0;
+            box-shadow: 0 0 10px 0 #ccc;
+            width: 200px;
+            height: 100px;
+            border-radius: 4px;
+            box-sizing: border-box;
+            padding: 15px 10px;
+            color: #606060;
+            opacity: 0;
+            background-color: #fff;
+        }
+
+        .tooltip>.province {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+   
+
+    <div id='myChart' style="height: 400;"></div> <div id='sclChart' style="height: 400;"></div>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+
+        var margin = {top: 10, right: 30, bottom: 30, left: 60},
+    width = 460 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+
+var data = [
+  [10,  20],
+  [20, 30],
+  [30, 40],
+  [ 40, 50],
+  [50, 60],
+];
+
+// Define the scales
+var xScale = d3.scaleLinear()
+  .domain([0, d3.max(data, function(d) { return d[0]; })])
+  .range([0, width]);
+
+var yScale = d3.scaleLinear()
+  .domain([0, d3.max(data, function(d) { return d[1]; })])
+  .range([height, 0]);
+
+// Define the axes
+var xAxis = d3.axisBottom(xScale);
+
+var yAxis = d3.axisLeft(yScale);
+
+// Define the chart
+var svg = d3.select("#sclChart").append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// Add the axes to the chart
+svg.append("g")
+  .attr("class", "x axis")
+  .attr("transform", "translate(0," + height + ")")
+  .call(xAxis);
+
+svg.append("g")
+  .attr("class", "y axis")
+  .call(yAxis);
+
+// Add the points to the chart
+const dot=svg.selectAll(".point")
+  .data(data)
+  .enter().append("circle")
+  .attr("class", "point")
+  .attr("r", 5)
+  .attr("cx", function(d) { return xScale(d[0]); })
+  .attr("cy", function(d) { return yScale(d[1]); });
+      
+
+// Define the brush
+var brush = d3.brush()
+  .extent([[0, 0], [width, height]])
+  .on("end", brushended);
+
+// Add the brush to the chart
+var gBrush = svg.append("g")
+  .attr("class", "brush")
+  .call(brush);
+
+// Function to handle the end of the brush
+function brushended({selection}) {
+  // Get the selection coordinates
+  let value = [];
+    if (selection) {
+        svg.selectAll(".point")
+      .each(function(d,i) {
+        const [[x0, y0], [x1, y1]] = selection;
+        var x = xScale(d[0]);
+        var y = yScale(d[1]);
+        if (x >= selection[0][0] && x <= selection[1][0] && y >= selection[0][1] && y <= selection[1][1]) {
+            value.push(i);   
+            console.log("索引值",i);
+           
+        }
+      });
+    console.log(value);
+  // Clear the brush selection
+  d3.select(this).call(brush.move, null);
+}
+}   
+
+
+
+
+const datachar = [
+  [1, 2, 3, 4, 5],
+  [2, 3, 4, 5, 6],
+  [3, 4, 5, 6, 7],
+  [4, 5, 6, 7, 8],
+  [5, 6, 7, 8, 9]
+];
+      const parallelAxis = [
+  {dim: 0, name: 'Axis 1'},
+  {dim: 1, name: 'Axis 2'},
+  {dim: 2, name: 'Axis 3'},
+  {dim: 3, name: 'Axis 4'},
+  {dim: 4, name: 'Axis 5'}
+];
+// Define series
+const series = [
+  {
+    type: 'parallel',
+    lineStyle: {
+      width: 1
+    },
+    data: datachar
+  }
+];
+      let ChartParaller = echarts.init(document.getElementById('myChart'));
+      const options = {
+  parallelAxis: parallelAxis,
+  series: series
+};
+
+
+      ChartParaller.clear();
+
+
+      // Set options and render chart
+ChartParaller.setOption(options);
+
+// Highlight specific data
+ChartParaller.dispatchAction({
+  type: 'highlight',
+  seriesIndex: 0,
+  dataIndex: 2
+});
+
+    </script>
+</body>
+<style>
+
+animate__fadeIn
+
+</style>
+</html>

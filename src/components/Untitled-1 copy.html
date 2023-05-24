@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+  
+  </style>
+</head>
+
+<body>
+  <div id='myCharrrt' style="height: 400px; width: 500px;"></div>
+  <div id='sclChart' style="height: 400;"></div>
+  <script src="../assets/js/echarts.min.js"></script>
+
+</body>
+  <script>
+
+    
+    var myChart = echarts.init(document.getElementById('myCharrrt'));
+    var option;
+
+    option = {
+      parallelAxis: [
+        {dim: 0, name: 'Grade1' ,
+         nameMap: { 'SUN': "Grade1" },},
+        {dim: 1, name: 'Grade2',
+        nameMap: { '阴性项目数': "Grade2" }
+      },
+        {dim: 2, name: 'Grade3', nameMap: { '阳性项目数': "Grade3" }},
+        {dim: 3, name: 'Grade4', nameMap: { '躯体化平均分': "Grade4" }}
+    ],
+    series: {
+        type: 'parallel',
+        data: [
+        {
+                'SUN': 1,
+                '阴性项目数': 90,
+                '阳性项目数': 1,
+                '躯体化平均分': 1,
+                
+              },
+              {
+                'SUN': "1.17",
+                '阴性项目数': "75",
+                '阳性项目数': "2",
+                '躯体化平均分': "1.25",
+               
+              }
+        ]
+         
+        
+            
+        
+    }
+    };
+    myChart.setOption(option);
+  </script>
+</html>
