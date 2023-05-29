@@ -1,7 +1,7 @@
 <template>
   <el-container class="page3" direction="vertical">
 
-    <!-- 时间范围选择-->
+    <!-- 时间范围选择
     <el-row>
       <el-col :span="24">
         <div class="top grid-content">
@@ -16,12 +16,12 @@
               </div>
         </div>
       </el-col>
-    </el-row>
+    </el-row>-->
     <!-- shujushaixuan数据筛选、地图、车流量-->
     <el-row>
       <el-col :span="0">
         <el-row>
-          <el-col :span="24">
+          <el-col :span="12">
             <div class="item1">
               <span class="title">数据筛选</span>
               <div class="tim2">
@@ -34,7 +34,7 @@
               </div>
             </div>
           </el-col>
-          <el-col :span="24">
+          <el-col :span="12">
             <div class="itme1">
               <span class="title">车辆占比</span>
               <div class="tim2">
@@ -53,6 +53,64 @@
       </el-col>
       <el-col :span="12">
         <el-row>
+          <el-col :span="12">
+            <div class="top grid-content">
+              <span class="title">数据筛选</span>
+              <div class="">
+                <!--
+
+                   <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll"
+                  @change="handleCheckAllChange">全选</el-checkbox>
+                <div style="margin: 15px 0;"></div>
+                <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
+                  <el-checkbox v-for="city in cities" :label="city" :key="city">{{ city }}</el-checkbox>
+                </el-checkbox-group>
+                -->
+
+
+                <el-form ref="form" :model="form" label-width="80px">
+                  <el-form-item label="类型选择">
+                    <el-checkbox-group v-model="form.type">
+                      <el-checkbox label="行人" name="type"></el-checkbox>
+                      <el-checkbox label="车量" name="type"></el-checkbox>
+                    </el-checkbox-group>
+                  </el-form-item>
+                  <el-form-item label="车辆速度">
+                    <div class="block">
+
+                      <el-slider v-model="form.valueSpeed" :show-tooltip="false" :min="minSpeedValue" :max="maxSpeedValue"
+                        :step="stepValue"></el-slider>
+                    </div>
+                  </el-form-item>
+                  <el-form-item label="时间跨度">
+                    <el-slider v-model="form.valueTime" :show-tooltip="false" :min="minTimeValue" :max="maxTimeValue"
+                      :step="stepValue" class="block"></el-slider>
+                  </el-form-item>
+
+                  <el-form-item label="时间粒度">
+                    <el-select v-model="form.step" placeholder="请选择时间分析粒度" class="block">
+                      <el-option label="60min" value="1"></el-option>
+                      <el-option label="30min" value="0.5"></el-option>
+                    </el-select>
+                  </el-form-item> <el-button type="primary" @click="onSubmit" style="width: 200;">立即创建</el-button>
+                  <el-form-item>
+
+                  </el-form-item>
+
+
+
+                </el-form>
+              </div>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="itme1">
+              <span class="title">车辆占比</span>
+              <div class="tim2">
+                <pieupi />
+              </div>
+            </div>
+          </el-col>
           <el-col :span="24">
             <div class="item1">
               <span class="title">断面车流量</span>
@@ -134,6 +192,17 @@ export default {
   },
   data() {
     return {
+      form: {
+        step: '',
+        valueTime: 0,
+        valueSpeed: 0,
+        type: []
+      },
+      minTimeValue: 1681340400099530, // 最小值
+      maxTimeValue: 1681372799599885, // 最大值
+      minSpeedValue: 1681340400099530, // 最小值
+      maxSpeedValue: 1681372799599885, // 最大值
+      stepValue: 3600000000, // 步长
       checkAll: false,
       checkedCities: ['小型车辆', '卡车'],
       cities: cityOptions,
@@ -141,6 +210,7 @@ export default {
       dialogVisible: false, //对话框
       resizeFn: null, //zi自适应
       sonTo: "ini",
+      sourceData: [],//从后端筛选回来的原数据
       //wenjia文件上传下载
       // 下载模板的URL
       downloadUrl: "/api/download-template",
@@ -172,6 +242,36 @@ export default {
       let checkedCount = value.length;
       this.checkAll = checkedCount === this.cities.length;
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
+    },
+    //表单提交
+    onSubmit() {
+      console.log('submit!');
+      var that = this;
+      const params = {
+        speed: this.form.valueSpeed,
+        timeRange: this.form.valueTime,
+        timeStap: this.form.step,
+        type: this.form.type//行人还是车
+      };
+
+      const timestamp = 1681340400099530;
+      const date = new Date(timestamp);
+      console.log("转换解惑"+date);
+      axios.post("http://127.0.0.1:5000/SelectData/", params).then(res => {
+        if (res) {
+          // console.log(res.data.index);
+          //that.initDRScatter(res.data.index);//原本用echart实现
+
+          var svg1 = d3.select("svg");
+          //jaingwei将为散点图
+          that.initDRScatterByD3(res.data.results.DRresult, svg1);
+          console.log(res.data.results.corrlation + "相关性++++++++++");
+          //TODO:相关性试图
+
+        } else {
+          this.$message.error("降维失败");
+        }
+      });
     }
   }
 };
@@ -182,19 +282,21 @@ export default {
   color: antiquewhite
 } */
 .top {
-  height: 100px;
-  background-color: #6eb8f157;
+  height: auto;
+  /*border-left:2px solid #8a7b7b82;*/
+  background-color: #fff;
 }
 
 .itme1 {
-  color: #1ee1d8;
+  color: #fff;
   font-size: 18px;
   height: 14rem;
 }
 
 .tim2 {
   height: 11.5rem;
-  background-color: #6eddf169;
+  background-color: #fff
+    /* #6eddf169;*/
 }
 
 .page3 {
@@ -205,7 +307,7 @@ export default {
   height: 100%;
   width: 100%;
   padding: 14px 20px 20px;
-  /** background: #03044a;*/
+  background: #e3d8d860;
   /*background: url("../assets/bg参考.png");
   background-size: 1920px 1080px;
   overflow: hidden;*/
