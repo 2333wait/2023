@@ -176,7 +176,7 @@
 </template>
 
 <script>
-
+import axios from "axios";
 import pieupi from "./pieupi";
 import piesads from "./piesads";
 import mapChar from './mapchar.vue'
@@ -262,10 +262,10 @@ export default {
           // console.log(res.data.index);
           //that.initDRScatter(res.data.index);//原本用echart实现
 
-          var svg1 = d3.select("svg");
+         // var svg1 = d3.select("svg");
           //jaingwei将为散点图
-          that.initDRScatterByD3(res.data.results.DRresult, svg1);
-          console.log(res.data.results.corrlation + "相关性++++++++++");
+          //that.initDRScatterByD3(res.data.results.DRresult, svg1);
+          console.log(res.data.results + "相关性++++++++++");
           //TODO:相关性试图
 
         } else {
