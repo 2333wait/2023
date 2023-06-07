@@ -48,7 +48,7 @@
       <el-col :span="12">
         <div class="">
           <span class="title">道路面板</span>
-          <mapChar />
+          <mapChar :carData = "sourceData" :carRangeData="sourceRangeData" />
         </div>
       </el-col>
       <el-col :span="12">
@@ -57,16 +57,6 @@
             <div class="top grid-content">
               <span class="title">数据筛选</span>
               <div class="">
-                <!--
-
-                   <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll"
-                  @change="handleCheckAllChange">全选</el-checkbox>
-                <div style="margin: 15px 0;"></div>
-                <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
-                  <el-checkbox v-for="city in cities" :label="city" :key="city">{{ city }}</el-checkbox>
-                </el-checkbox-group>
-                -->
-
 
                 <el-form ref="form" :model="form" label-width="80px">
                   <el-form-item label="类型选择">
@@ -96,9 +86,6 @@
                   <el-form-item>
 
                   </el-form-item>
-
-
-
                 </el-form>
               </div>
             </div>
@@ -126,37 +113,8 @@
         </el-row>
 
       </el-col>
-      <!---比例、健康指数
-      <el-col :md="6">
-        <div class="itme1">
-          <span class="title">车辆占比</span>
-          <div class="tim2">
-            <pieupi />
-          </div>
-        </div>
-      </el-col>
-      <el-col :md="6" :offset="12">
-        <div class="itme1">
-          <span class="title">交通健康指数</span>
-          <div class="tim2"></div>
-        </div>
-      </el-col>-->
+
     </el-row>
-    <!-- 比例、
-    <el-row >
-      <el-col :md="6">
-        <div class="itme1">
-          <span class="title">车辆占比</span>
-          <div class="tim2"></div>
-        </div>
-      </el-col>
-      <el-col :md="6" :offset="12">
-        <div class="itme1">
-          <span class="title">交通健康指数</span>
-          <div class="tim2"></div>
-        </div>
-      </el-col>
-    </el-row >健康指数-->
     <!-- 拥堵分析、预测-->
     <el-row :gutter="10">
       <el-col :md="12">
@@ -200,6 +158,9 @@ export default {
       },
       minTimeValue: 1681340400099530, // 最小值
       maxTimeValue: 1681372799599885, // 最大值
+     /* import datetime
+      dt = datetime.datetime.fromtimestamp((1681340400099530+3600000000/2)/1000000)
+                    1681354800099530*/
       minSpeedValue: 1681340400099530, // 最小值
       maxSpeedValue: 1681372799599885, // 最大值
       stepValue: 3600000000, // 步长
@@ -210,7 +171,8 @@ export default {
       dialogVisible: false, //对话框
       resizeFn: null, //zi自适应
       sonTo: "ini",
-      sourceData: [],//从后端筛选回来的原数据
+      sourceData: [],//从后端筛选回来的时刻原数据
+      sourceRangeData: [],//从后端筛选回来的时间段原数据
       //wenjia文件上传下载
       // 下载模板的URL
       downloadUrl: "/api/download-template",
@@ -265,7 +227,9 @@ export default {
          // var svg1 = d3.select("svg");
           //jaingwei将为散点图
           //that.initDRScatterByD3(res.data.results.DRresult, svg1);
-          console.log(res.data.results + "相关性++++++++++");
+          console.log(res.data.results.tickCar[0][0]['x_coord'], + "相关性++++++++++");
+          that.sourceData = res.data.results.tickCar;
+          that.sourceRangeData = res.data.results.areaCar;
           //TODO:相关性试图
 
         } else {
