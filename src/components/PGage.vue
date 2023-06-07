@@ -19,7 +19,7 @@
     </el-row>-->
     <!-- shujushaixuan数据筛选、地图、车流量-->
     <el-row>
-      <el-col :span="0">
+      <!-- <el-col :span="0">
         <el-row>
           <el-col :span="12">
             <div class="item1">
@@ -44,7 +44,7 @@
           </el-col>
         </el-row>
 
-      </el-col>
+      </el-col> -->
       <el-col :span="12">
         <div class="">
           <span class="title">道路面板</span>
@@ -101,7 +101,9 @@
           <el-col :span="24">
             <div class="item1">
               <span class="title">断面车流量</span>
-              <div class="tim2"></div>
+              <div class="tim2">
+                <piesads/>
+              </div>
             </div>
           </el-col>
           <el-col :span="24">
@@ -137,15 +139,15 @@
 import axios from "axios";
 import pieupi from "./pieupi";
 import piesads from "./piesads";
-import mapChar from './mapchar.vue'
+// import mapChar from './mapchar.vue'
 //import bus from "../assets/eventBus";
 const cityOptions = ['小型车辆', '行人', '非机动车', '卡车', '货车', '客车'];
 export default {
   name: "PGage",
   components: {
     pieupi,
-    piesads,
-    mapChar
+     piesads//,
+    // mapChar
 
   },
   data() {
