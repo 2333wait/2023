@@ -122,7 +122,9 @@
       <el-col :md="12">
         <div class="item1">
           <span class="title">拥堵预测</span>
-          <div class="tim2"></div>
+          <div class="tim2">
+            <yuce/>
+          </div>
         </div>
       </el-col>
       <el-col :md="12">
@@ -139,15 +141,18 @@
 import axios from "axios";
 import pieupi from "./pieupi";
 import piesads from "./piesads";
-// import mapChar from './mapchar.vue'
+// import mapChar from './mapchar.vue';
+import yuce from './yuce.vue';
 //import bus from "../assets/eventBus";
 const cityOptions = ['小型车辆', '行人', '非机动车', '卡车', '货车', '客车'];
 export default {
   name: "PGage",
   components: {
-    pieupi,
-     piesads//,
-    // mapChar
+    pieupi,//饼图车辆占比
+     piesads,//平行坐标轴
+    // mapChar,
+
+    yuce//拥堵预测曲线
 
   },
   data() {
